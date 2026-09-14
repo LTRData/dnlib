@@ -1,5 +1,25 @@
-.NET module/assembly reader/writer library written for [de4dot](https://github.com/0xd4d/de4dot/).
+# dnlib — LTRData historical fork
 
+.NET module/assembly reader/writer library, originally written for [de4dot](https://github.com/0xd4d/de4dot/).
+
+## About this repository
+
+This is an LTRData-hosted fork of [yck1509/dnlib](https://github.com/yck1509/dnlib), which in turn forks [0xd4d/dnlib](https://github.com/0xd4d/dnlib).
+
+The source on `master` is the October 2015 snapshot [532c767](https://github.com/LTRData/dnlib/commit/532c767a9a4f6af51cd4eb5d1c0af750c8509c5d), with assembly version `1.5.0.1500`. There are no LTRData-specific source changes relative to that revision of `yck1509/dnlib`.
+
+For newer dnlib releases and documentation, see [upstream dnlib](https://github.com/0xd4d/dnlib). The projects and API guide here describe this older source tree; they do not establish compatibility with newer dnlib APIs, metadata or PDB formats.
+
+| Project | Contents | Target |
+| --- | --- | --- |
+| [src/dnlib.csproj](src/dnlib.csproj) | Assembly reader/writer library, including metadata, CIL, resources and PDB support. | .NET Framework 2.0, Any CPU |
+| [Examples/Examples.csproj](Examples/Examples.csproj) | Six C# examples demonstrating the library. | .NET Framework 2.0, x86 |
+
+The library is MIT-licensed; see [LICENSE.txt](LICENSE.txt) for the original copyright and contributor notices.
+
+## Historical background
+
+The following background and API guide originate from the upstream documentation for this snapshot. Comparisons with other libraries reflect the original development context.
 
 dnlib was created because de4dot needed a robust .NET assembly library that
 could handle all types of obfuscated assemblies. de4dot used to use Mono.Cecil
@@ -16,9 +36,23 @@ process.
 Compiling
 ---------
 
-You must have Visual Studio 2008 or later. The solution file was created by
-Visual Studio 2010, so if you use VS2008, open the solution file and change the
-version number so VS2008 can read it.
+The checked-in projects use the classic MSBuild format (`ToolsVersion="4.0"`), target .NET Framework 2.0 and import `Microsoft.CSharp.targets`. [dnlib.sln](dnlib.sln) is a Visual Studio 2010 solution. Use a compatible .NET Framework MSBuild/Visual Studio environment with the .NET Framework 2.0 reference assemblies available. Installing a current .NET SDK alone does not provide this legacy build environment.
+
+From the repository root, build the library with:
+
+```bat
+msbuild src/dnlib.csproj /p:Configuration=Release /p:Platform=AnyCPU
+```
+
+To build both the library and examples through the solution, select `Mixed Platforms`:
+
+```bat
+msbuild dnlib.sln /p:Configuration=Release /p:Platform="Mixed Platforms"
+```
+
+The solution's `Any CPU` configuration builds only the library. The library project also defines `Debug_ThreadSafe` and `Release_ThreadSafe` configurations, which enable `THREAD_SAFE`; select these on the project directly if needed.
+
+The configured library output path is `../../Release/bin/` relative to `src/dnlib.csproj`, so it writes to a `Release/bin` directory alongside the repository checkout. The examples use `Examples/bin/Release/`.
 
 Examples
 --------
@@ -26,7 +60,7 @@ Examples
 All examples use C#, but since it's a .NET library, you can use any .NET
 language (eg. VB.NET).
 
-See the Examples project for several examples.
+See the [Examples project](Examples) for several examples. [Program.cs](Examples/Program.cs) selects which example runs (currently `Example6.Run()`); edit that selection and any example-specific file paths before running it.
 
 Opening a .NET assembly/module
 ------------------------------
